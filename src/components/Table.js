@@ -2,7 +2,9 @@ import { useContext } from 'react';
 import context from '../context/STARWARSContext';
 
 function Table() {
-  const { planets } = useContext(context);
+  const { planets, copyPlanets, filterName } = useContext(context);
+
+  const value = filterName ? copyPlanets : planets;
   return (
     <table>
       <thead>
@@ -23,7 +25,7 @@ function Table() {
         </tr>
       </thead>
       <tbody>
-        {planets.map(({
+        {value.map(({
           name,
           rotation_period: rotationPeriod,
           orbital_period: orbitalPeriod,

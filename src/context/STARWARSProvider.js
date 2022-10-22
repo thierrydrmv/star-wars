@@ -4,6 +4,8 @@ import STARWARSContext from './STARWARSContext';
 
 function STARWARSProvider({ children }) {
   const [planets, setPlanets] = useState([]);
+  const [filterName, setfilterName] = useState('');
+  const [copyPlanets, setCopyPlanets] = useState([]);
 
   useEffect(() => {
     const starWarsApi = async () => {
@@ -16,11 +18,18 @@ function STARWARSProvider({ children }) {
       });
       setPlanets(dataFiltered);
     };
-
     starWarsApi();
-  }, [planets]);
+  }, []);
 
-  const contextValue = useMemo(() => ({ planets, setPlanets }), [planets]);
+  useEffect(() => {
+    setCopyPlanets(planets);
+    const filteredPlanets = planets.filter(({ name }) => name.includes(filterName));
+    setCopyPlanets(filteredPlanets);
+  }, [filterName, planets]);
+
+  const contextValue = useMemo(() => (
+    { planets, setPlanets, setfilterName, filterName, copyPlanets }
+  ), [planets, filterName, copyPlanets]);
 
   return (
     <STARWARSContext.Provider value={ contextValue }>
