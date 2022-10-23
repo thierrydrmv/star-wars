@@ -30,17 +30,16 @@ function STARWARSProvider({ children }) {
       setCopyPlanets(filteredPlanetsName);
     }
     const filterActive = () => {
-      setCopyPlanets(planets);
       let filteredPlanets = [];
       const resultFilter = formFilter.map(({ size, number, option }) => {
         if (size === 'maior que') {
-          filteredPlanets = planets.filter((planet) => parseInt(planet[option], 10)
+          filteredPlanets = copyPlanets.filter((planet) => parseInt(planet[option], 10)
           > parseInt(number, 10));
         } else if (size === 'menor que') {
-          filteredPlanets = planets.filter((planet) => parseInt(planet[option], 10)
+          filteredPlanets = copyPlanets.filter((planet) => parseInt(planet[option], 10)
           < parseInt(number, 10));
-        } else {
-          filteredPlanets = planets.filter((planet) => parseInt(planet[option], 10)
+        } else if (size === 'igual a') {
+          filteredPlanets = copyPlanets.filter((planet) => parseInt(planet[option], 10)
           === parseInt(number, 10));
         }
         return filteredPlanets;
