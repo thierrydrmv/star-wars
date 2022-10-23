@@ -6,6 +6,8 @@ function STARWARSProvider({ children }) {
   const [planets, setPlanets] = useState([]);
   const [filterName, setfilterName] = useState('');
   const [copyPlanets, setCopyPlanets] = useState([]);
+  const [filterOn, setFilterOn] = useState(false);
+  const [formFilter, setFormFilter] = useState([]);
 
   useEffect(() => {
     const starWarsApi = async () => {
@@ -23,13 +25,44 @@ function STARWARSProvider({ children }) {
 
   useEffect(() => {
     setCopyPlanets(planets);
-    const filteredPlanets = planets.filter(({ name }) => name.includes(filterName));
-    setCopyPlanets(filteredPlanets);
-  }, [filterName, planets]);
+    if (filterName) {
+      const filteredPlanetsName = planets.filter(({ name }) => name.includes(filterName));
+      setCopyPlanets(filteredPlanetsName);
+    }
+    const filterActive = () => {
+      setCopyPlanets(planets);
+      let filteredPlanets = [];
+      const resultFilter = formFilter.map(({ size, number, option }) => {
+        if (size === 'maior que') {
+          filteredPlanets = planets.filter((planet) => parseInt(planet[option], 10)
+          > parseInt(number, 10));
+        } else if (size === 'menor que') {
+          filteredPlanets = planets.filter((planet) => parseInt(planet[option], 10)
+          < parseInt(number, 10));
+        } else {
+          filteredPlanets = planets.filter((planet) => parseInt(planet[option], 10)
+          === parseInt(number, 10));
+        }
+        return filteredPlanets;
+      });
+      setCopyPlanets(resultFilter[resultFilter.length - 1]);
+    };
+    if (filterOn) filterActive();
+  }, [filterName, planets, filterOn, formFilter]);
 
   const contextValue = useMemo(() => (
-    { planets, setPlanets, setfilterName, filterName, copyPlanets }
-  ), [planets, filterName, copyPlanets]);
+    {
+      planets,
+      setPlanets,
+      filterName,
+      setfilterName,
+      copyPlanets,
+      filterOn,
+      setFilterOn,
+      formFilter,
+      setFormFilter,
+    }
+  ), [planets, filterName, copyPlanets, filterOn, formFilter]);
 
   return (
     <STARWARSContext.Provider value={ contextValue }>

@@ -2,9 +2,9 @@ import { useContext } from 'react';
 import context from '../context/STARWARSContext';
 
 function Table() {
-  const { planets, copyPlanets, filterName } = useContext(context);
+  const { planets, copyPlanets, filterName, filterOn } = useContext(context);
 
-  const value = filterName ? copyPlanets : planets;
+  const value = filterName || filterOn ? copyPlanets : planets;
   return (
     <table>
       <thead>
