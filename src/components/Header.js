@@ -7,7 +7,9 @@ function Header() {
   const [optionFilter, setOptionFilter] = useState('population');
   const [size, setSize] = useState('maior que');
   const [number, setNumber] = useState('0');
-  const { setfilterName, setFilterOn, setFormFilter, formFilter } = useContext(context);
+  const {
+    setfilterName, setFilterOn,
+    setFormFilter, formFilter, setCopyPlanets, planets } = useContext(context);
 
   useEffect(() => {
     setOptionFilter(arrayOptions[0]);
@@ -26,10 +28,23 @@ function Header() {
   };
 
   const handleDelete = (form) => {
-    const newFilter = formFilter.filter((inputFilter) => inputFilter !== form);
+    const newFilter = formFilter && formFilter
+      .filter((inputFilter) => inputFilter !== form);
     setFormFilter(newFilter);
-    setFilterOn(false);
+    setArrayOptions([...arrayOptions, form.option]);
+    if (formFilter.length === 1) {
+      setFilterOn(false);
+    }
+    setCopyPlanets(planets);
   };
+
+  const handleClear = () => {
+    setFormFilter([]);
+    setFilterOn(false);
+    setArrayOptions(['population',
+      'orbital_period', 'diameter', 'rotation_period', 'surface_water']);
+  };
+
   return (
     <header>
       <h1>Planets</h1>
@@ -76,12 +91,20 @@ function Header() {
 
         </button>
       </form>
-      { formFilter.map((form, i) => (
-        <div key={ i }>
+      { formFilter && formFilter.map((form, i) => (
+        <div data-testid="filter" key={ i }>
           <p>{`${form.option} ${form.size} ${form.number}`}</p>
           <button type="button" onClick={ () => handleDelete(form) }>Delete</button>
         </div>
       ))}
+      <button
+        data-testid="button-remove-filters"
+        type="button"
+        onClick={ () => handleClear() }
+      >
+        Remover Filtros
+
+      </button>
     </header>
   );
 }

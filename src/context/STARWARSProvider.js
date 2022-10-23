@@ -50,13 +50,16 @@ function STARWARSProvider({ children }) {
       });
       setCopyPlanets(resultFilter[resultFilter.length - 1]);
     };
-    if (filterOn) filterActive(copyPlanets);
+    if (filterOn) {
+      filterActive(copyPlanets);
+    }
   }, [filterOn, planets, formFilter]);
 
   const contextValue = useMemo(() => (
     {
       planets,
       setPlanets,
+      setCopyPlanets,
       filterName,
       setfilterName,
       copyPlanets,
