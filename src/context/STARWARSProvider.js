@@ -26,28 +26,32 @@ function STARWARSProvider({ children }) {
   useEffect(() => {
     setCopyPlanets(planets);
     if (filterName) {
+      setCopyPlanets(planets);
       const filteredPlanetsName = planets.filter(({ name }) => name.includes(filterName));
       setCopyPlanets(filteredPlanetsName);
     }
-    const filterActive = () => {
+  }, [filterName, planets]);
+
+  useEffect(() => {
+    const filterActive = (array) => {
       let filteredPlanets = [];
       const resultFilter = formFilter.map(({ size, number, option }) => {
         if (size === 'maior que') {
-          filteredPlanets = copyPlanets.filter((planet) => parseInt(planet[option], 10)
+          filteredPlanets = array.filter((planet) => parseInt(planet[option], 10)
           > parseInt(number, 10));
         } else if (size === 'menor que') {
-          filteredPlanets = copyPlanets.filter((planet) => parseInt(planet[option], 10)
+          filteredPlanets = array.filter((planet) => parseInt(planet[option], 10)
           < parseInt(number, 10));
         } else if (size === 'igual a') {
-          filteredPlanets = copyPlanets.filter((planet) => parseInt(planet[option], 10)
+          filteredPlanets = array.filter((planet) => parseInt(planet[option], 10)
           === parseInt(number, 10));
         }
         return filteredPlanets;
       });
       setCopyPlanets(resultFilter[resultFilter.length - 1]);
     };
-    if (filterOn) filterActive();
-  }, [filterName, planets, filterOn, formFilter]);
+    if (filterOn) filterActive(copyPlanets);
+  }, [filterOn, planets, formFilter]);
 
   const contextValue = useMemo(() => (
     {
