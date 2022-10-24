@@ -7,13 +7,30 @@ function Header() {
   const [optionFilter, setOptionFilter] = useState('population');
   const [size, setSize] = useState('maior que');
   const [number, setNumber] = useState('0');
+  const [orderArray, setOrderArray] = useState([]);
   const {
     setfilterName, setFilterOn,
-    setFormFilter, formFilter, setCopyPlanets, planets } = useContext(context);
+    setFormFilter, formFilter,
+    setCopyPlanets, planets,
+    sort, setSort, column, setColumn,
+    setSortOn, copyPlanets, id, setId } = useContext(context);
 
   useEffect(() => {
     setOptionFilter(arrayOptions[0]);
   }, [arrayOptions]);
+
+  useEffect(() => {
+    const orderType = (type) => {
+      if (sort === 'ASC') {
+        const order = copyPlanets.sort((a, b) => a[type] - b[type]);
+        setOrderArray(order);
+      } else if (sort === 'DESC') {
+        const order = copyPlanets.sort((a, b) => b[type] - a[type]);
+        setOrderArray(order);
+      }
+    };
+    orderType(column);
+  }, [id, column, copyPlanets, setCopyPlanets, sort]);
 
   const sendData = (option) => {
     const filter = {
@@ -43,6 +60,16 @@ function Header() {
     setFilterOn(false);
     setArrayOptions(['population',
       'orbital_period', 'diameter', 'rotation_period', 'surface_water']);
+  };
+
+  const handleOrder = () => {
+    setSortOn(true);
+    setId(id + 1);
+    const unknownLast = orderArray.filter((e) => e[column] === 'unknown');
+    const unknownFree = orderArray.filter((e) => e[column] !== 'unknown');
+    console.log([...unknownFree, unknownLast]);
+    const newArray = [...unknownFree, ...unknownLast];
+    setCopyPlanets(newArray);
   };
 
   return (
@@ -88,23 +115,64 @@ function Header() {
           onClick={ () => sendData(optionFilter) }
         >
           Filtrar
+        </button>
+        <select
+          data-testid="column-sort"
+          onChange={ ({ target }) => setColumn(target.value) }
+        >
+          <option value="population">population</option>
+          <option value="orbital_period">orbital_period</option>
+          <option value="diameter">diameter</option>
+          <option value="rotation_period">rotation_period</option>
+          <option value="surface_water">surface_water</option>
+
+        </select>
+        <label htmlFor="ASC">
+          <input
+            data-testid="column-sort-input-asc"
+            id="ASC"
+            type="radio"
+            value="ASC"
+            checked={ sort === 'ASC' }
+            onChange={ ({ target }) => setSort(target.value) }
+          />
+          Ascendente
+        </label>
+        <label htmlFor="DESC">
+          <input
+            data-testid="column-sort-input-desc"
+            id="DESC"
+            type="radio"
+            value="DESC"
+            checked={ sort === 'DESC' }
+            onChange={ ({ target }) => setSort(target.value) }
+          />
+          Descendente
+        </label>
+        <button
+          data-testid="column-sort-button"
+          type="button"
+          onClick={ () => handleOrder() }
+        >
+          Ordenar
 
         </button>
-      </form>
-      { formFilter && formFilter.map((form, i) => (
-        <div data-testid="filter" key={ i }>
-          <p>{`${form.option} ${form.size} ${form.number}`}</p>
-          <button type="button" onClick={ () => handleDelete(form) }>Delete</button>
-        </div>
-      ))}
-      <button
-        data-testid="button-remove-filters"
-        type="button"
-        onClick={ () => handleClear() }
-      >
-        Remover Filtros
+        <button
+          data-testid="button-remove-filters"
+          type="button"
+          onClick={ () => handleClear() }
+        >
+          Remover Filtros
 
-      </button>
+        </button>
+        { formFilter && formFilter.map((form, i) => (
+          <div data-testid="filter" key={ i }>
+            <p>{`${form.option} ${form.size} ${form.number}`}</p>
+            <button type="button" onClick={ () => handleDelete(form) }>Delete</button>
+          </div>
+        ))}
+      </form>
+
     </header>
   );
 }

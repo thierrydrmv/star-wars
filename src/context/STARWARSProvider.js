@@ -8,6 +8,10 @@ function STARWARSProvider({ children }) {
   const [copyPlanets, setCopyPlanets] = useState([]);
   const [filterOn, setFilterOn] = useState(false);
   const [formFilter, setFormFilter] = useState([]);
+  const [column, setColumn] = useState('population');
+  const [sort, setSort] = useState('');
+  const [sortOn, setSortOn] = useState(false);
+  const [id, setId] = useState(0);
 
   useEffect(() => {
     const starWarsApi = async () => {
@@ -19,12 +23,12 @@ function STARWARSProvider({ children }) {
         return planet;
       });
       setPlanets(dataFiltered);
+      setCopyPlanets(dataFiltered);
     };
     starWarsApi();
   }, []);
 
   useEffect(() => {
-    setCopyPlanets(planets);
     if (filterName) {
       setCopyPlanets(planets);
       const filteredPlanetsName = planets.filter(({ name }) => name.includes(filterName));
@@ -53,7 +57,7 @@ function STARWARSProvider({ children }) {
     if (filterOn) {
       filterActive(copyPlanets);
     }
-  }, [filterOn, planets, formFilter]);
+  }, [filterOn, formFilter]);
 
   const contextValue = useMemo(() => (
     {
@@ -67,8 +71,21 @@ function STARWARSProvider({ children }) {
       setFilterOn,
       formFilter,
       setFormFilter,
+      column,
+      setColumn,
+      sort,
+      sortOn,
+      setSort,
+      setSortOn,
+      id,
+      setId,
     }
-  ), [planets, filterName, copyPlanets, filterOn, formFilter]);
+  ), [planets,
+    filterName,
+    copyPlanets,
+    filterOn,
+    formFilter,
+    column, sort, sortOn, id]);
 
   return (
     <STARWARSContext.Provider value={ contextValue }>

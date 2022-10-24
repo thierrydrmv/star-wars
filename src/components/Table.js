@@ -2,9 +2,9 @@ import { useContext } from 'react';
 import context from '../context/STARWARSContext';
 
 function Table() {
-  const { planets, copyPlanets, filterName, filterOn } = useContext(context);
+  const { planets, copyPlanets, filterName, filterOn, sortOn } = useContext(context);
 
-  const value = filterName || filterOn ? copyPlanets : planets;
+  const value = filterName || filterOn || sortOn ? copyPlanets : planets;
   return (
     <table>
       <thead>
@@ -41,7 +41,7 @@ function Table() {
           url }) => (
           (
             <tr key={ name }>
-              <td>{name}</td>
+              <td data-testid="planet-name">{name}</td>
               <td>{rotationPeriod}</td>
               <td>{orbitalPeriod}</td>
               <td>{diameter}</td>
