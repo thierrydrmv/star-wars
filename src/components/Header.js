@@ -167,8 +167,8 @@ function Header() {
         </button>
         { formFilter && formFilter.map((form, i) => (
           <div data-testid="filter" key={ i }>
-            <p>{`${form.option} ${form.size} ${form.number}`}</p>
             <button type="button" onClick={ () => handleDelete(form) }>Delete</button>
+            <p>{`${form.option} ${form.size} ${form.number}`}</p>
           </div>
         ))}
       </form>
